@@ -4,6 +4,7 @@ import logoMetro from './assets/metro.png'
 import { Formulario } from './components/Formulario'
 import Listar from './components/Listar'
 import { useState } from 'react'
+import Cupcake from './components/Cupcake'
 
 
 function App() {
@@ -47,6 +48,11 @@ function App() {
           </div>
           <div className='mt-10 h-[675px] overflow-y-auto'>
             <Listar estado={estado} />
+            {/* <Cupcake color="bg-orange-500">Naranja</Cupcake>
+            <br></br>
+            <Cupcake color="bg-red-500">Fresa</Cupcake>
+            <br></br>
+            <Cupcake color="bg-blue-500">Moral azul</Cupcake> */}
           </div>
         </div>
       </main>

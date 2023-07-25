@@ -26,7 +26,7 @@ export const Formulario = ({ setEstado }) => {
     }
 
     const handleSubmit = async (e) => {
-        e.prevenDefault()
+        e.preventDefault()
         // Haciendo una validación de campos vacios
         if (Object.values(form).includes("") || Object.entries(form).length === 0) {
             setError(true)
@@ -53,13 +53,14 @@ export const Formulario = ({ setEstado }) => {
         } catch (error) {
             console.log(error);
         }
+
     }
 
     return (
         <form onSubmit={handleSubmit}>
             {error && <Mensajes tipo="bg-red-900">"Existen campos vacíos"</Mensajes>}
             {mensaje && <Mensajes tipo="bg-green-900">"Registro exitoso"</Mensajes>}
-            <Mensajes tipo={"bg-red-900"}>validar campos</Mensajes>
+            {/* <Mensajes tipo={"bg-red-900"}>validar campos</Mensajes> */}
             <div>
                 <label
                     htmlFor='nombre'
