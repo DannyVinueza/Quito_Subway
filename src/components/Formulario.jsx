@@ -1,11 +1,12 @@
 import { useState } from "react"
 import Mensajes from "./Mensajes"
 import { v4 as uuidv4 } from 'uuid';
+import { useEffect } from 'react'
 
 // JSON Tiene las comillas en la clave
 // Onjeto no tiene las comillas en la clave
 
-export const Formulario = ({ setEstado }) => {
+export const Formulario = ({ setEstado, idMetro }) => {
     //El useStae siempre va anes del return
     const [error, setError] = useState(false)// Para mensajes de error
     const [mensaje, setMensaje] = useState(false)// Para mensajes de exito
@@ -18,6 +19,31 @@ export const Formulario = ({ setEstado }) => {
         detalles: ""
     })
 
+    useEffect(() => {
+        if(idMetro)
+        {
+            (async function (idMetro) {
+                try {
+                    const respuesta = await (await fetch(`http://localhost:3000/metro/${idMetro}`)).json()
+                    const {id,nombre,sector,salida,llegada,maquinista,detalles} = respuesta
+                    setForm({
+                        ...form,
+                        nombre,
+                        sector,
+                        salida,
+                        llegada,
+                        maquinista,
+                        detalles,
+                        id
+                    })
+                }
+                catch (error) {
+                    console.log(error);
+                }
+            })(idMetro)
+        }
+    }, [idMetro])
+
     const handleChange = (e) => {
         setForm({
             ...form,// Hace una copia del objeto
@@ -25,9 +51,9 @@ export const Formulario = ({ setEstado }) => {
         })
     }
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e) => 
+    {
         e.preventDefault()
-        // Haciendo una validación de campos vacios
         if (Object.values(form).includes("") || Object.entries(form).length === 0) {
             setError(true)
             setTimeout(() => {
@@ -36,24 +62,42 @@ export const Formulario = ({ setEstado }) => {
             return
         }
         try {
-            const url = "http://localhost:3000/metro"
-            form.id = uuidv4()
-            await fetch(url, {
-                method: 'POST',// Metodo para crear un nuevo recurso
-                body: JSON.stringify(form),// Transformar a JSON
-                headers: { 'Content-Type': 'application/json' }// Tipo de contenido
-            })
-            setMensaje(true)
-            setEstado(true)
-            setTimeout(() => {
-                setMensaje(false)
-                setEstado(false)
+            if(form.id){
+                const url = `http://localhost:3000/metro/${form.id}`
+                await fetch(url,{
+                    method:'PUT',
+                    body:JSON.stringify(form),
+                    headers:{'Content-Type':'application/json'}
+                })
+                setEstado(true)
                 setForm({})
-            }, 1000);
+				setTimeout(() => {
+                    setEstado(false)
+                    setForm({})
+                }, 1000)
+            }
+            else{
+
+                const url = "http://localhost:3000/metro"
+                form.id = uuidv4()
+                await fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify(form),
+                    headers: { 'Content-Type': 'application/json' }
+                })
+                setMensaje(true)
+                setEstado(true)
+                setTimeout(() => {
+                    setMensaje(false)
+                    setEstado(false)
+                    setForm({})
+                }, 1000);
+
+            }
+
         } catch (error) {
             console.log(error);
         }
-
     }
 
     return (
@@ -154,7 +198,7 @@ export const Formulario = ({ setEstado }) => {
                 className='bg-sky-900 w-full p-3 
         text-white uppercase font-bold rounded-lg 
         hover:bg-red-900 cursor-pointer transition-all'
-                value='Registrar ruta' />
+        value={form.id ? "Actualizar ruta" : "Registrar ruta"} />
 
         </form>
     )
