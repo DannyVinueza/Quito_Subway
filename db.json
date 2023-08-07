@@ -16,5 +16,20 @@
   "profile": {
     "name": "typicode"
   },
-  "metro": []
+  "metro": [
+    {
+      "nombre": "Danny",
+      "sector": "Lajoya",
+      "salida": "Sur",
+      "llegada": "Norte",
+      "maquinista": "DannyVinueza",
+      "detalles": "Slidadesdeelsur",
+      "id": "a7d5358a-bbc2-412c-ab93-772f25a3ae23"
+    },
+    {
+      "nombre": "Sur-Norte",
+      "sector": "Lajoya",
+      "id": "d2a7b414-86e4-42f6-8a03-66bb77a63265"
+    }
+  ]
 }
