@@ -1,33 +1,82 @@
-import { useState } from "react"
-import Mensajes from "./Mensajes"
+import React, { useState, useEffect } from "react";
 import { v4 as uuidv4 } from 'uuid';
-import { useEffect } from 'react'
-
-// JSON Tiene las comillas en la clave
-// Onjeto no tiene las comillas en la clave
+import { useFormik } from 'formik';
+import Mensajes from "./Mensajes";
+import { validationSchema } from "./Validar";
 
 export const Formulario = ({ setEstado, idMetro }) => {
-    //El useStae siempre va anes del return
-    const [error, setError] = useState(false)// Para mensajes de error
-    const [mensaje, setMensaje] = useState(false)// Para mensajes de exito
-    const [form, setForm] = useState({
+    const [error, setError] = useState(false);
+    const [mensaje, setMensaje] = useState(false);
+
+    const initialValues = {
         nombre: "",
         sector: "",
         salida: "",
         llegada: "",
         maquinista: "",
         detalles: ""
-    })
+    };
+
+    const handleSubmit = async (values, { resetForm }) => {
+        try {
+            if (Object.values(values).some(value => value === "")) {
+                setError(true);
+                setTimeout(() => {
+                    setError(false);
+                }, 1000);
+                return;
+            }
+
+            if (idMetro) {
+                const url = `https://64d053feff953154bb78c692.mockapi.io/metro/${idMetro}`;
+                await fetch(url, {
+                    method: 'PUT',
+                    body: JSON.stringify(values),
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                setEstado(true);
+                setTimeout(() => {
+                    setEstado(false);
+                }, 1000);
+            } else {
+                const url = "https://64d053feff953154bb78c692.mockapi.io/metro";
+                values.id = uuidv4();
+                await fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify(values),
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                setMensaje(true);
+                setEstado(true);
+                setTimeout(() => {
+                    setMensaje(false);
+                    setEstado(false);
+                }, 1000);
+
+            }
+
+            // Limpia los campos del formulario
+            resetForm();
+
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const formik = useFormik({
+        initialValues,
+        onSubmit: handleSubmit,
+        validationSchema,
+    });
 
     useEffect(() => {
-        if(idMetro)
-        {
-            (async function (idMetro) {
+        if (idMetro) {
+            (async function () {
                 try {
-                    const respuesta = await (await fetch(`https://64d053feff953154bb78c692.mockapi.io/metro/${idMetro}`)).json()
-                    const {id,nombre,sector,salida,llegada,maquinista,detalles} = respuesta
-                    setForm({
-                        ...form,
+                    const respuesta = await (await fetch(`https://64d053feff953154bb78c692.mockapi.io/metro/${idMetro}`)).json();
+                    const { id, nombre, sector, salida, llegada, maquinista, detalles } = respuesta;
+                    formik.setValues({
+                        ...formik.values,
                         nombre,
                         sector,
                         salida,
@@ -35,162 +84,118 @@ export const Formulario = ({ setEstado, idMetro }) => {
                         maquinista,
                         detalles,
                         id
-                    })
-                }
-                catch (error) {
+                    });
+                } catch (error) {
                     console.log(error);
                 }
-            })(idMetro)
+            })();
         }
-    }, [idMetro])
-
-    const handleChange = (e) => {
-        setForm({
-            ...form,// Hace una copia del objeto
-            [e.target.name]: e.target.value.trim()//Escribe los datos del input al objeto
-        })
-    }
-
-    const handleSubmit = async (e) => 
-    {
-        e.preventDefault()
-        if (Object.values(form).includes("") || Object.entries(form).length === 0) {
-            setError(true)
-            setTimeout(() => {
-                setError(false)
-            }, 1000);
-            return
-        }
-        try {
-            if(form.id){
-                const url = `https://64d053feff953154bb78c692.mockapi.io/metro/${form.id}`
-                await fetch(url,{
-                    method:'PUT',
-                    body:JSON.stringify(form),
-                    headers:{'Content-Type':'application/json'}
-                })
-                setEstado(true)
-                setForm({})
-				setTimeout(() => {
-                    setEstado(false)
-                    setForm({})
-                }, 1000)
-            }
-            else{
-
-                const url = "https://64d053feff953154bb78c692.mockapi.io/metro"
-                form.id = uuidv4()
-                await fetch(url, {
-                    method: 'POST',
-                    body: JSON.stringify(form),
-                    headers: { 'Content-Type': 'application/json' }
-                })
-                setMensaje(true)
-                setEstado(true)
-                setTimeout(() => {
-                    setMensaje(false)
-                    setEstado(false)
-                    setForm({})
-                }, 1000);
-
-            }
-
-        } catch (error) {
-            console.log(error);
-        }
-    }
+    }, [idMetro]);
 
     return (
-        <form onSubmit={handleSubmit}>
-            {error && <Mensajes tipo="bg-red-900">"Existen campos vacíos"</Mensajes>}
-            {mensaje && <Mensajes tipo="bg-green-900">"Registro exitoso"</Mensajes>}
-            {/* <Mensajes tipo={"bg-red-900"}>validar campos</Mensajes> */}
+        <form onSubmit={formik.handleSubmit}>
+            {error && <Mensajes tipo="bg-red-900">Existen campos vacíos</Mensajes>}
+            {mensaje && <Mensajes tipo="bg-green-900">Registro exitoso</Mensajes>}
+
+            
             <div>
-                <label
-                    htmlFor='nombre'
-                    className='text-gray-700 uppercase font-bold text-sm'>Nombre: </label>
+                <label htmlFor='nombre' className='text-gray-700 uppercase font-bold text-sm'>Nombre: </label>
                 <input
                     id='nombre'
                     type="text"
                     className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-5'
                     placeholder='nombre de la ruta'
                     name='nombre'
-                    value={form.nombre || ""}
-                    onChange={handleChange}//handleChange puede ser cualquier nombre handle palabra reservada 
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.nombre}
                 />
+                {formik.touched.nombre && formik.errors.nombre ? (
+                    <div className='text-red-600'>{formik.errors.nombre}</div>
+                ) : null}
             </div>
 
             <div>
-                <label
-                    htmlFor='sector'
-                    className='text-gray-700 uppercase font-bold text-sm'>Sector: </label>
+                <label htmlFor='sector' className='text-gray-700 uppercase font-bold text-sm'>Sector: </label>
                 <input
                     id='sector'
                     type="text"
                     className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-5'
                     placeholder='sector de la ruta'
                     name='sector'
-                    value={form.sector || ""}
-                    onChange={handleChange}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.sector}
                 />
+                {formik.touched.sector && formik.errors.sector ? (
+                    <div className='text-red-600'>{formik.errors.sector}</div>
+                ) : null}
             </div>
 
             <div>
-                <label
-                    htmlFor='salida'
-                    className='text-gray-700 uppercase font-bold text-sm'>Punto de salida: </label>
+                <label htmlFor='salida' className='text-gray-700 uppercase font-bold text-sm'>Punto de salida: </label>
                 <input
                     id='salida'
                     type="text"
                     className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-5'
                     placeholder='punto de salida'
                     name='salida'
-                    value={form.salida || ""}
-                    onChange={handleChange}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.salida}
                 />
+                {formik.touched.salida && formik.errors.salida ? (
+                    <div className='text-red-600'>{formik.errors.salida}</div>
+                ) : null}
             </div>
 
             <div>
-                <label
-                    htmlFor='llegada'
-                    className='text-gray-700 uppercase font-bold text-sm'>Punto de llegada: </label>
+                <label htmlFor='llegada' className='text-gray-700 uppercase font-bold text-sm'>Punto de llegada: </label>
                 <input
                     id='llegada'
                     type="text"
                     className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-5'
                     placeholder='punto de llegada'
                     name='llegada'
-                    value={form.llegada || ""}
-                    onChange={handleChange}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.llegada}
                 />
+                {formik.touched.llegada && formik.errors.llegada ? (
+                    <div className='text-red-600'>{formik.errors.llegada}</div>
+                ) : null}
             </div>
 
             <div>
-                <label
-                    htmlFor='maquinista'
-                    className='text-gray-700 uppercase font-bold text-sm'>Nombre del maquinista: </label>
+                <label htmlFor='maquinista' className='text-gray-700 uppercase font-bold text-sm'>Nombre del maquinista: </label>
                 <input
                     id='maquinista'
                     type="text"
                     className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-5'
                     placeholder='nombre del maquinista'
                     name='maquinista'
-                    value={form.maquinista || ""}
-                    onChange={handleChange}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.maquinista}
                 />
+                {formik.touched.maquinista && formik.errors.maquinista ? (
+                    <div className='text-red-600'>{formik.errors.maquinista}</div>
+                ) : null}
             </div>
+
             <div>
-                <label
-                    htmlFor='detalles'
-                    className='text-gray-700 uppercase font-bold text-sm'>Detalles: </label>
+                <label htmlFor='detalles' className='text-gray-700 uppercase font-bold text-sm'>Detalles: </label>
                 <textarea
                     id='detalles'
-                    type="text"
                     className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-5'
                     name='detalles'
-                    value={form.detalles || ""}
-                    onChange={handleChange}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.detalles}
                 />
+                {formik.touched.detalles && formik.errors.detalles ? (
+                    <div className='text-red-600'>{formik.errors.detalles}</div>
+                ) : null}
             </div>
 
             <input
@@ -198,8 +203,7 @@ export const Formulario = ({ setEstado, idMetro }) => {
                 className='bg-sky-900 w-full p-3 
         text-white uppercase font-bold rounded-lg 
         hover:bg-red-900 cursor-pointer transition-all'
-        value={form.id ? "Actualizar ruta" : "Registrar ruta"} />
-
+                value={formik.values.id ? "Actualizar ruta" : "Registrar ruta"} />
         </form>
-    )
-}
+    );
+};
