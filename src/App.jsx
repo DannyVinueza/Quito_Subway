@@ -13,6 +13,12 @@ function App() {
   const [estado, setEstado] = useState(false)
   const [idMetro, setIdmetro] = useState(0)
 
+  const handleFormUpdate = () => {
+    // Esta función se llama desde el componente Formulario
+    // para indicar que se realizó una actualización
+    setEstado(!estado);
+    setIdmetro(0); // Limpiar el idMetro después de la actualización
+};
 
   return (
     <div className={darkMode ? "dark" : ""}>
@@ -35,7 +41,7 @@ function App() {
             <hr className="w-80 border border-gray-400" />
           </div>
           <div className='mt-10'>
-            <Formulario setEstado={setEstado} idMetro={idMetro}/>
+            <Formulario setEstado={handleFormUpdate} idMetro={idMetro}/>
           </div>
         </div>
 
