@@ -14,9 +14,7 @@ function App() {
   const [idMetro, setIdmetro] = useState(0)
 
   const handleFormUpdate = () => {
-    // Esta función se llama desde el componente Formulario
-    // para indicar que se realizó una actualización
-    setEstado(!estado);
+    setEstado(!estado);// Indica que se realizo un actualización
     setIdmetro(0); // Limpiar el idMetro después de la actualización
 };
 
