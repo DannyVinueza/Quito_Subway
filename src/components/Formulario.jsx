@@ -96,8 +96,8 @@ export const Formulario = ({ setEstado, idMetro }) => {
 
     return (
         <form onSubmit={formik.handleSubmit}>
-            {error && <Mensajes tipo="bg-red-900">Existen campos vacíos</Mensajes>}
-            {mensaje && <Mensajes tipo="bg-green-900">Registro exitoso</Mensajes>}
+            {/* {error && <Mensajes tipo="bg-red-900">Existen campos vacíos</Mensajes>}
+            {mensaje && <Mensajes tipo="bg-green-900">Registro exitoso</Mensajes>} */}
 <div>
             <label htmlFor='nombre' className='text-gray-700 uppercase font-bold text-sm'>Nombre: </label>
                 <input
@@ -196,6 +196,7 @@ export const Formulario = ({ setEstado, idMetro }) => {
                 {formik.touched.detalles && formik.errors.detalles ? (
                     <div className='text-red-600'>{formik.errors.detalles}</div>
                 ) : null}
+                
             </div>
 
 
@@ -205,13 +206,14 @@ export const Formulario = ({ setEstado, idMetro }) => {
         text-white uppercase font-bold rounded-lg 
         hover:bg-red-900 cursor-pointer transition-all'
                 value={formik.values.id ? "Actualizar ruta" : "Registrar ruta"} 
-                /*onClick={(e) => {
+                onClick={(e) => {
                     if (Object.values(formik.values).some(value => value === "")) {
-                        e.preventDefault(); // Evita que el formulario se envíe
+                        
                         toast.error("Llena todos los campos antes de registrar"); // Muestra un toast de error
                     }
-                }}*//>
-           
+                }}
+            />
+        
         </form>
     );
 };
