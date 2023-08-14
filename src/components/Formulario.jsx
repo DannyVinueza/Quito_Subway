@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import { useFormik } from 'formik';
+import { toast, ToastContainer } from 'react-toastify'; // Importa toast y ToastContainer
+import 'react-toastify/dist/ReactToastify.css'; // Importa los estilos de toast
 import Mensajes from "./Mensajes";
 import { validationSchema } from "./Validar";
 
@@ -38,6 +40,7 @@ export const Formulario = ({ setEstado, idMetro }) => {
                 setTimeout(() => {
                     setEstado(false);
                 }, 1000);
+                toast.success("Ruta actualizada"); // Muestra un toast de éxito
             } else {
                 const url = "https://64d053feff953154bb78c692.mockapi.io/metro";
                 values.id = uuidv4();
@@ -52,10 +55,9 @@ export const Formulario = ({ setEstado, idMetro }) => {
                     setMensaje(false);
                     setEstado(false);
                 }, 1000);
-
+                toast.success("Ruta registrada"); // Muestra un toast de éxito
             }
 
-            // Limpia los campos del formulario
             resetForm();
 
         } catch (error) {
@@ -96,10 +98,8 @@ export const Formulario = ({ setEstado, idMetro }) => {
         <form onSubmit={formik.handleSubmit}>
             {error && <Mensajes tipo="bg-red-900">Existen campos vacíos</Mensajes>}
             {mensaje && <Mensajes tipo="bg-green-900">Registro exitoso</Mensajes>}
-
-            
-            <div>
-                <label htmlFor='nombre' className='text-gray-700 uppercase font-bold text-sm'>Nombre: </label>
+<div>
+            <label htmlFor='nombre' className='text-gray-700 uppercase font-bold text-sm'>Nombre: </label>
                 <input
                     id='nombre'
                     type="text"
@@ -198,12 +198,20 @@ export const Formulario = ({ setEstado, idMetro }) => {
                 ) : null}
             </div>
 
+
             <input
                 type="submit"
                 className='bg-sky-900 w-full p-3 
         text-white uppercase font-bold rounded-lg 
         hover:bg-red-900 cursor-pointer transition-all'
-                value={formik.values.id ? "Actualizar ruta" : "Registrar ruta"} />
+                value={formik.values.id ? "Actualizar ruta" : "Registrar ruta"} 
+                /*onClick={(e) => {
+                    if (Object.values(formik.values).some(value => value === "")) {
+                        e.preventDefault(); // Evita que el formulario se envíe
+                        toast.error("Llena todos los campos antes de registrar"); // Muestra un toast de error
+                    }
+                }}*//>
+           
         </form>
     );
 };
