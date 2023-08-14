@@ -21,6 +21,7 @@ export const Formulario = ({ setEstado, idMetro }) => {
 
     const handleSubmit = async (values, { resetForm }) => {
         try {
+
             if (Object.values(values).some(value => value === "")) {
                 setError(true);
                 setTimeout(() => {
@@ -68,7 +69,7 @@ export const Formulario = ({ setEstado, idMetro }) => {
     const formik = useFormik({
         initialValues,
         onSubmit: handleSubmit,
-        validationSchema,
+        validationSchema
     });
 
     useEffect(() => {
@@ -110,7 +111,11 @@ export const Formulario = ({ setEstado, idMetro }) => {
                     placeholder='nombre de la ruta'
                     name='nombre'
                     onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
+                    onBlur={(e) => {
+                        const trimmedValue = e.target.value.trim();
+                        formik.handleBlur(e);
+                        formik.setFieldValue('nombre', trimmedValue);
+                    }}
                     value={formik.values.nombre}
                     disabled={formik.values.id !== undefined} // Disable when in update mode
                 />
@@ -126,78 +131,103 @@ export const Formulario = ({ setEstado, idMetro }) => {
                 <input
                     id='sector'
                     type="text"
-                    className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-5'
+                    className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
                     placeholder='sector de la ruta'
                     name='sector'
                     onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
+                    onBlur={(e) => {
+                        const trimmedValue = e.target.value.trim();
+                        formik.handleBlur(e);
+                        formik.setFieldValue('sector', trimmedValue);
+                    }}
                     value={formik.values.sector}
+                    maxLength={20}
                 />
                 {formik.touched.sector && formik.errors.sector ? (
                     <div className='text-red-600'>{formik.errors.sector}</div>
                 ) : null}
             </div>
 
-            <div>
+            <div className="mb-5">
                 <label htmlFor='salida' className='text-gray-700 uppercase font-bold text-sm'>Punto de salida: </label>
                 <input
                     id='salida'
                     type="text"
-                    className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-5'
+                    className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
                     placeholder='punto de salida'
                     name='salida'
                     onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
+                    onBlur={(e) => {
+                        const trimmedValue = e.target.value.trim();
+                        formik.handleBlur(e);
+                        formik.setFieldValue('salida', trimmedValue);
+                    }}
                     value={formik.values.salida}
+                    maxLength={20}
                 />
                 {formik.touched.salida && formik.errors.salida ? (
                     <div className='text-red-600'>{formik.errors.salida}</div>
                 ) : null}
             </div>
 
-            <div>
+            <div className="mb-5">
                 <label htmlFor='llegada' className='text-gray-700 uppercase font-bold text-sm'>Punto de llegada: </label>
                 <input
                     id='llegada'
                     type="text"
-                    className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-5'
+                    className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
                     placeholder='punto de llegada'
                     name='llegada'
                     onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
+                    onBlur={(e) => {
+                        const trimmedValue = e.target.value.trim();
+                        formik.handleBlur(e);
+                        formik.setFieldValue('llegada', trimmedValue);
+                    }}
                     value={formik.values.llegada}
+                    maxLength={20}
                 />
                 {formik.touched.llegada && formik.errors.llegada ? (
                     <div className='text-red-600'>{formik.errors.llegada}</div>
                 ) : null}
             </div>
 
-            <div>
+            <div className="mb-5">
                 <label htmlFor='maquinista' className='text-gray-700 uppercase font-bold text-sm'>Nombre del maquinista: </label>
                 <input
                     id='maquinista'
                     type="text"
-                    className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-5'
+                    className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
                     placeholder='nombre del maquinista'
                     name='maquinista'
                     onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
+                    onBlur={(e) => {
+                        const trimmedValue = e.target.value.trim();
+                        formik.handleBlur(e);
+                        formik.setFieldValue('maquinista', trimmedValue);
+                    }}
                     value={formik.values.maquinista}
+                    maxLength={20}
                 />
                 {formik.touched.maquinista && formik.errors.maquinista ? (
                     <div className='text-red-600'>{formik.errors.maquinista}</div>
                 ) : null}
             </div>
 
-            <div>
+            <div className="mb-5">
                 <label htmlFor='detalles' className='text-gray-700 uppercase font-bold text-sm'>Detalles: </label>
                 <textarea
                     id='detalles'
-                    className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-5'
+                    className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
                     name='detalles'
                     onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
+                    onBlur={(e) => {
+                        const trimmedValue = e.target.value.trim();
+                        formik.handleBlur(e);
+                        formik.setFieldValue('detalles', trimmedValue);
+                    }}
                     value={formik.values.detalles}
+                    maxLength={30}
                 />
                 {formik.touched.detalles && formik.errors.detalles ? (
                     <div className='text-red-600'>{formik.errors.detalles}</div>
