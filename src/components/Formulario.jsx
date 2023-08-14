@@ -73,6 +73,7 @@ export const Formulario = ({ setEstado, idMetro }) => {
 
     useEffect(() => {
         if (idMetro) {
+
             (async function () {
                 try {
                     const respuesta = await (await fetch(`https://64d053feff953154bb78c692.mockapi.io/metro/${idMetro}`)).json();
@@ -98,22 +99,27 @@ export const Formulario = ({ setEstado, idMetro }) => {
         <form onSubmit={formik.handleSubmit}>
             {/* {error && <Mensajes tipo="bg-red-900">Existen campos vacíos</Mensajes>}
             {mensaje && <Mensajes tipo="bg-green-900">Registro exitoso</Mensajes>} */}
-<div>
-            <label htmlFor='nombre' className='text-gray-700 uppercase font-bold text-sm'>Nombre: </label>
+
+            <div>
+                <label htmlFor='nombre' className='text-gray-700 uppercase font-bold text-sm'>Nombre: </label>
                 <input
                     id='nombre'
                     type="text"
-                    className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-5'
+                    className={`border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-5 ${formik.touched.nombre && formik.errors.nombre ? 'border-red-500' : ''
+                        }`}
                     placeholder='nombre de la ruta'
                     name='nombre'
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     value={formik.values.nombre}
+                    disabled={formik.values.id !== undefined} // Disable when in update mode
                 />
+
                 {formik.touched.nombre && formik.errors.nombre ? (
                     <div className='text-red-600'>{formik.errors.nombre}</div>
                 ) : null}
             </div>
+
 
             <div>
                 <label htmlFor='sector' className='text-gray-700 uppercase font-bold text-sm'>Sector: </label>
@@ -196,24 +202,40 @@ export const Formulario = ({ setEstado, idMetro }) => {
                 {formik.touched.detalles && formik.errors.detalles ? (
                     <div className='text-red-600'>{formik.errors.detalles}</div>
                 ) : null}
-                
+
             </div>
 
 
             <input
                 type="submit"
-                className='bg-sky-900 w-full p-3 
-        text-white uppercase font-bold rounded-lg 
-        hover:bg-red-900 cursor-pointer transition-all'
-                value={formik.values.id ? "Actualizar ruta" : "Registrar ruta"} 
+                className='bg-sky-900 w-full p-3 text-white uppercase font-bold rounded-lg hover:bg-red-900 cursor-pointer transition-all'
+                value={formik.values.id ? "Actualizar ruta" : "Registrar ruta"}
                 onClick={(e) => {
                     if (Object.values(formik.values).some(value => value === "")) {
-                        
-                        toast.error("Llena todos los campos antes de registrar"); // Muestra un toast de error
+                        toast.error("Llena todos los campos antes de registrar");
+                    } else if (!formik.isValid) {
+                        toast.error("Corrige los errores antes de registrar");
+                    } else if (!formik.isValidating) {
+                        // Comprobación adicional para nombre duplicado
+                        toast.error("Nombre de ruta duplicado");
                     }
                 }}
             />
-        
+
+
+            {formik.values.id ? (
+                <button
+                    type="button"
+                    className='bg-gray-300 w-full p-3 text-gray-700 uppercase font-bold rounded-lg hover:bg-gray-400 cursor-pointer transition-all mt-3'
+                    onClick={() => {
+                        formik.resetForm();
+                        toast.info("Actualización cancelada");
+                    }}
+                >
+                    Cancelar
+                </button>
+            ) : null}
+
         </form>
     );
 };
