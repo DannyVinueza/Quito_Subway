@@ -114,6 +114,7 @@ export const Formulario = ({ setEstado, idMetro }) => {
                         formik.setFieldValue('nombre', trimmedValue);
                     }}
                     value={formik.values.nombre}
+                    maxLength={20}
                 />
                 {formik.touched.nombre && formik.errors.nombre ? (
                     <div className='text-red-600'>{formik.errors.nombre}</div>
@@ -135,6 +136,7 @@ export const Formulario = ({ setEstado, idMetro }) => {
                         formik.setFieldValue('sector', trimmedValue);
                     }}
                     value={formik.values.sector}
+                    maxLength={20}
                 />
                 {formik.touched.sector && formik.errors.sector ? (
                     <div className='text-red-600'>{formik.errors.sector}</div>
@@ -156,6 +158,7 @@ export const Formulario = ({ setEstado, idMetro }) => {
                         formik.setFieldValue('salida', trimmedValue);
                     }}
                     value={formik.values.salida}
+                    maxLength={20}
                 />
                 {formik.touched.salida && formik.errors.salida ? (
                     <div className='text-red-600'>{formik.errors.salida}</div>
@@ -177,6 +180,7 @@ export const Formulario = ({ setEstado, idMetro }) => {
                         formik.setFieldValue('llegada', trimmedValue);
                     }}
                     value={formik.values.llegada}
+                    maxLength={20}
                 />
                 {formik.touched.llegada && formik.errors.llegada ? (
                     <div className='text-red-600'>{formik.errors.llegada}</div>
@@ -198,6 +202,7 @@ export const Formulario = ({ setEstado, idMetro }) => {
                         formik.setFieldValue('maquinista', trimmedValue);
                     }}
                     value={formik.values.maquinista}
+                    maxLength={20}
                 />
                 {formik.touched.maquinista && formik.errors.maquinista ? (
                     <div className='text-red-600'>{formik.errors.maquinista}</div>
@@ -217,7 +222,7 @@ export const Formulario = ({ setEstado, idMetro }) => {
                         formik.setFieldValue('detalles', trimmedValue);
                     }}
                     value={formik.values.detalles}
-                    maxLength={20}
+                    maxLength={30}
                 />
                 {formik.touched.detalles && formik.errors.detalles ? (
                     <div className='text-red-600'>{formik.errors.detalles}</div>
