@@ -99,12 +99,12 @@ export const Formulario = ({ setEstado, idMetro }) => {
         <form onSubmit={formik.handleSubmit}>
             {/* {error && <Mensajes tipo="bg-red-900">Existen campos vacíos</Mensajes>}
             {mensaje && <Mensajes tipo="bg-green-900">Registro exitoso</Mensajes>} */}
-<div>
+<div className="mb-5">
             <label htmlFor='nombre' className='text-gray-700 uppercase font-bold text-sm'>Nombre: </label>
                 <input
                     id='nombre'
                     type="text"
-                    className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-5'
+                    className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
                     placeholder='nombre de la ruta'
                     name='nombre'
                     onChange={formik.handleChange}
@@ -121,12 +121,12 @@ export const Formulario = ({ setEstado, idMetro }) => {
                 ) : null}
             </div>
 
-            <div>
+            <div className="mb-5">
                 <label htmlFor='sector' className='text-gray-700 uppercase font-bold text-sm'>Sector: </label>
                 <input
                     id='sector'
                     type="text"
-                    className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-5'
+                    className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
                     placeholder='sector de la ruta'
                     name='sector'
                     onChange={formik.handleChange}
@@ -143,12 +143,12 @@ export const Formulario = ({ setEstado, idMetro }) => {
                 ) : null}
             </div>
 
-            <div>
+            <div className="mb-5">
                 <label htmlFor='salida' className='text-gray-700 uppercase font-bold text-sm'>Punto de salida: </label>
                 <input
                     id='salida'
                     type="text"
-                    className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-5'
+                    className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
                     placeholder='punto de salida'
                     name='salida'
                     onChange={formik.handleChange}
@@ -165,12 +165,12 @@ export const Formulario = ({ setEstado, idMetro }) => {
                 ) : null}
             </div>
 
-            <div>
+            <div className="mb-5">
                 <label htmlFor='llegada' className='text-gray-700 uppercase font-bold text-sm'>Punto de llegada: </label>
                 <input
                     id='llegada'
                     type="text"
-                    className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-5'
+                    className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
                     placeholder='punto de llegada'
                     name='llegada'
                     onChange={formik.handleChange}
@@ -187,12 +187,12 @@ export const Formulario = ({ setEstado, idMetro }) => {
                 ) : null}
             </div>
 
-            <div>
+            <div className="mb-5">
                 <label htmlFor='maquinista' className='text-gray-700 uppercase font-bold text-sm'>Nombre del maquinista: </label>
                 <input
                     id='maquinista'
                     type="text"
-                    className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-5'
+                    className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
                     placeholder='nombre del maquinista'
                     name='maquinista'
                     onChange={formik.handleChange}
@@ -209,11 +209,11 @@ export const Formulario = ({ setEstado, idMetro }) => {
                 ) : null}
             </div>
 
-            <div>
+            <div className="mb-5">
                 <label htmlFor='detalles' className='text-gray-700 uppercase font-bold text-sm'>Detalles: </label>
                 <textarea
                     id='detalles'
-                    className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-5'
+                    className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
                     name='detalles'
                     onChange={formik.handleChange}
                     onBlur={(e) => {
