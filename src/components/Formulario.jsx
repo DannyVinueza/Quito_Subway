@@ -30,6 +30,13 @@ export const Formulario = ({ setEstado, idMetro }) => {
                 return;
             }
 
+            const nombreExists = await checkNombreExists(values.nombre, idMetro); // Función para verificar si el nombre existe
+
+            if (nombreExists) {
+                toast.error("El nombre ya existe en la base de datos");
+                return;
+            }
+
             if (idMetro) {
                 const url = `https://64d053feff953154bb78c692.mockapi.io/metro/${idMetro}`;
                 await fetch(url, {
@@ -66,6 +73,12 @@ export const Formulario = ({ setEstado, idMetro }) => {
         }
     };
 
+    const checkNombreExists = async (nombre, excludeId = null) => {
+        const response = await fetch("https://64d053feff953154bb78c692.mockapi.io/metro");
+        const data = await response.json();
+        return data.some(item => item.nombre === nombre && item.id !== excludeId);
+    };
+
     const formik = useFormik({
         initialValues,
         onSubmit: handleSubmit,
@@ -74,7 +87,6 @@ export const Formulario = ({ setEstado, idMetro }) => {
 
     useEffect(() => {
         if (idMetro) {
-
             (async function () {
                 try {
                     const respuesta = await (await fetch(`https://64d053feff953154bb78c692.mockapi.io/metro/${idMetro}`)).json();
@@ -100,14 +112,12 @@ export const Formulario = ({ setEstado, idMetro }) => {
         <form onSubmit={formik.handleSubmit}>
             {/* {error && <Mensajes tipo="bg-red-900">Existen campos vacíos</Mensajes>}
             {mensaje && <Mensajes tipo="bg-green-900">Registro exitoso</Mensajes>} */}
-
-            <div>
+            <div className="mb-5">
                 <label htmlFor='nombre' className='text-gray-700 uppercase font-bold text-sm'>Nombre: </label>
                 <input
                     id='nombre'
                     type="text"
-                    className={`border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-5 ${formik.touched.nombre && formik.errors.nombre ? 'border-red-500' : ''
-                        }`}
+                    className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
                     placeholder='nombre de la ruta'
                     name='nombre'
                     onChange={formik.handleChange}
@@ -117,16 +127,14 @@ export const Formulario = ({ setEstado, idMetro }) => {
                         formik.setFieldValue('nombre', trimmedValue);
                     }}
                     value={formik.values.nombre}
-                    disabled={formik.values.id !== undefined} // Disable when in update mode
+                    maxLength={20}
                 />
-
                 {formik.touched.nombre && formik.errors.nombre ? (
                     <div className='text-red-600'>{formik.errors.nombre}</div>
                 ) : null}
             </div>
 
-
-            <div>
+            <div className="mb-5">
                 <label htmlFor='sector' className='text-gray-700 uppercase font-bold text-sm'>Sector: </label>
                 <input
                     id='sector'
@@ -238,21 +246,17 @@ export const Formulario = ({ setEstado, idMetro }) => {
 
             <input
                 type="submit"
-                className='bg-sky-900 w-full p-3 text-white uppercase font-bold rounded-lg hover:bg-red-900 cursor-pointer transition-all'
+                className='bg-sky-900 w-full p-3 
+        text-white uppercase font-bold rounded-lg 
+        hover:bg-red-900 cursor-pointer transition-all'
                 value={formik.values.id ? "Actualizar ruta" : "Registrar ruta"}
                 onClick={(e) => {
                     if (Object.values(formik.values).some(value => value === "")) {
-                        toast.error("Llena todos los campos antes de registrar");
-                    } else if (!formik.isValid) {
-                        toast.error("Corrige los errores antes de registrar");
-                    } else if (!formik.isValidating) {
-                        // Comprobación adicional para nombre duplicado
-                        toast.error("Nombre de ruta duplicado");
+
+                        toast.error("Llena todos los campos antes de registrar"); // Muestra un toast de error
                     }
                 }}
             />
-
-
             {formik.values.id ? (
                 <button
                     type="button"
@@ -260,12 +264,12 @@ export const Formulario = ({ setEstado, idMetro }) => {
                     onClick={() => {
                         formik.resetForm();
                         toast.info("Actualización cancelada");
+                        window.location.reload(); // Refrescar la página al cancelar la actualización
                     }}
                 >
                     Cancelar
                 </button>
             ) : null}
-
         </form>
     );
 };
