@@ -264,7 +264,7 @@ export const Formulario = ({ setEstado, idMetro }) => {
                     onClick={() => {
                         formik.resetForm();
                         toast.info("Actualización cancelada");
-                        window.location.reload(); // Refrescar la página al cancelar la actualización
+                        setEstado(false); // Refrescar la página al cancelar la actualización
                     }}
                 >
                     Cancelar
